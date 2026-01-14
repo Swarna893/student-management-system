@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mt-4"><i class="fas fa-chalkboard-teacher"></i> Teacher Dashboard</h2>
+
+    <div class="row">
+        <!-- Manage Results Section -->
+        <div class="col-md-4 mt-4">
+            <div class="card text-white bg-success h-100 shadow-sm">
+                <div class="card-header"><i class="fas fa-poll"></i> Manage Results</div>
+                <div class="card-body">
+                    <h5 class="card-title">Student Marks</h5>
+                    <p class="card-text">Upload and manage marks for your assigned courses.</p>
+                    <a href="{% url 'marks_dashboard' %}" class="btn btn-light text-success fw-bold stretched-link">Go
+                        to Results</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mt-4">
+            <div class="card-header">My Assigned Courses</div>
+            <div class="card-body">
+                {% if courses %}
+                <div class="list-group">
+                    {% for course in courses %}
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ course.name }}</h5>
+                            <small>{{ course.code }}</small>
+                        </div>
+                        <p class="mb-1">{{ course.description|truncatewords:20 }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No courses assigned yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

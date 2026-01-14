@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load math_filters %}
+
+{% block title %}My Marks{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0"><i class="fas fa-graduation-cap"></i> My Academic Results</h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if student.profile_photo %}
+                        <img src="{{ student.profile_photo.url }}" class="rounded-circle me-3" width="80" height="80"
+                            style="object-fit:cover;">
+                        {% endif %}
+                        <div>
+                            <h4>{{ student.full_name }}</h4>
+                            <p class="text-muted mb-0">Roll No: {{ student.roll_number }}</p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Total Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mark in marks %}
+                                <tr>
+                                    <td>{{ mark.course.code }}</td>
+                                    <td>{{ mark.course.name }}</td>
+                                    <td class="fw-bold">{{ mark.marks_obtained }}</td>
+                                    <td>{{ mark.total_marks }}</td>
+                                    <td>
+                                        {% with pct=mark.marks_obtained|percentage:mark.total_marks %}
+                                        {{ pct|floatformat:1 }}%
+                                        {% endwith %}
+                                    </td>
+                                    <td>
+                                        {% if mark.marks_obtained|add:0 >= mark.total_marks|add:0|multiply:0.4 %}
+                                        <span class="badge bg-success">Pass</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Fail</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No marks uploaded yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back
+                            to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

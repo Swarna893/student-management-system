@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mt-4">Student Dashboard</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">My Profile</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if student.profile_photo %}
+                            <img src="{{ student.profile_photo.url }}" class="img-fluid rounded-circle"
+                                alt="Profile Photo">
+                            {% else %}
+                            <div class="bg-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                style="width: 100px; height: 100px; color: white;">
+                                <i class="fas fa-user fa-3x"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ student.full_name }}</h4>
+                            <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                            <p><strong>Email:</strong> {{ student.email }}</p>
+                            <p><strong>Course:</strong> {{ student.course.name }}</p>
+                            <p><strong>DOB:</strong> {{ student.dob }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Results Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0"><i class="fas fa-chart-bar"></i> My Academic Results</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Total Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mark in marks %}
+                                <tr>
+                                    <td>{{ mark.course.code }}</td>
+                                    <td>{{ mark.course.name }}</td>
+                                    <td class="fw-bold">{{ mark.marks_obtained }}</td>
+                                    <td>{{ mark.total_marks }}</td>
+                                    <td>
+                                        {% widthratio mark.marks_obtained mark.total_marks 100 %}%
+                                    </td>
+                                    <td>
+                                        <!-- Simplified Pass/Fail Logic (using widthratio or just raw comparison if supported) -->
+                                        <!-- Django templates are limited in math. We'll just show the raw percentage for now or use a custom tag if needed. -->
+                                        <span class="badge bg-secondary">--</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No marks uploaded yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

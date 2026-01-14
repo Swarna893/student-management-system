@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Course Details: {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0"><i class="fas fa-book"></i> Course Details</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="30%">Course Code</th>
+                            <td>{{ course.code }}</td>
+                        </tr>
+                        <tr>
+                            <th>Course Name</th>
+                            <td>{{ course.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Description</th>
+                            <td>{{ course.description|linebreaks }}</td>
+                        </tr>
+                    </table>
+
+                    <h5 class="mt-4">Enrolled Students</h5>
+                    <div class="list-group mb-3">
+                        {% for student in course.student_set.all %}
+                        <a href="{% url 'student_detail' student.pk %}" class="list-group-item list-group-item-action">
+                            {{ student.full_name }} ({{ student.roll_number }})
+                        </a>
+                        {% empty %}
+                        <div class="list-group-item text-muted">No students enrolled.</div>
+                        {% endfor %}
+                    </div>
+
+                    <h5 class="mt-4">Teachers</h5>
+                    <div class="list-group mb-3">
+                        {% for teacher in course.teachers.all %}
+                        <a href="{% url 'teacher_detail' teacher.pk %}" class="list-group-item list-group-item-action">
+                            {{ teacher.name }}
+                        </a>
+                        {% empty %}
+                        <div class="list-group-item text-muted">No teachers assigned.</div>
+                        {% endfor %}
+                    </div>
+
+
+                    <div class="mt-3">
+                        <a href="{% url 'courses' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back
+                            to List</a>
+                        {% if user.is_superuser %}
+                        <a href="{% url 'edit_course' course.pk %}" class="btn btn-warning"><i class="fas fa-edit"></i>
+                            Edit</a>
+                        <a href="{% url 'delete_course' course.pk %}" class="btn btn-danger"><i
+                                class="fas fa-trash-alt"></i> Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

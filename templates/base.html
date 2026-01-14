@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            min-height: 100vh;
+            background: #343a40;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: #343a40;
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+            border-bottom: 1px solid #47748b;
+        }
+
+        #sidebar ul p {
+            color: #fff;
+            padding: 10px;
+        }
+
+        #sidebar ul li a {
+            padding: 10px;
+            font-size: 1.1em;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        #sidebar ul li a:hover {
+            color: #7386D5;
+            background: #fff;
+        }
+
+        #content {
+            width: 100%;
+            padding: 20px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        {% if user.is_authenticated %}
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>SMS Portal</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p>Welcome, {{ user.username }}</p>
+                <li>
+                    <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                {% if user.is_superuser %}
+                <li>
+                    <a href="#adminSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                            class="fas fa-user-shield"></i> Admin</a>
+                    <ul class="collapse list-unstyled" id="adminSubmenu">
+                        <!-- Updated Links with Django URL tags -->
+                        <li><a href="{% url 'students' %}">Students</a></li> <!-- Link to Student List -->
+                        <li><a href="{% url 'teachers' %}">Teachers</a></li> <!-- Link to Teacher List -->
+                        <li><a href="{% url 'courses' %}">Courses</a></li> <!-- Link to Course List -->
+                    </ul>
+                </li>
+                {% endif %}
+
+                {% if is_teacher or is_superuser %}
+                <li>
+                    <a href="#"><i class="fas fa-chalkboard-teacher"></i> My Courses</a>
+                </li>
+                {% endif %}
+
+                {% if is_student %}
+                <li>
+                    <a href="#"><i class="fas fa-user-graduate"></i> My Profile</a>
+                </li>
+                {% endif %}
+
+                <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link text-white text-decoration-none"
+                            style="padding: 10px; width: 100%; text-align: left;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+        <!-- Page Content -->
+        <div id="content">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
